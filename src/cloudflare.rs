@@ -46,7 +46,12 @@ impl Cloudflare {
         )
     }
 
-    async fn cf(&self, method: &'static str, path: &str, body: Option<Value>) -> RegistrarResult<Value> {
+    async fn cf(
+        &self,
+        method: &'static str,
+        path: &str,
+        body: Option<Value>,
+    ) -> RegistrarResult<Value> {
         self.need(&["api_token"])?;
         let body_s = body.map(|b| b.to_string()).unwrap_or_default();
         let mut headers = vec![
@@ -311,10 +316,7 @@ mod tests {
         );
         t.push(200, r#"{"success":true,"result":[]}"#);
         t.push(200, r#"{"success":true,"result":{"id":"rec1"}}"#);
-        let m = Cloudflare::with_settings(
-            Arc::new(t),
-            &json!({"api_token": "tok"}),
-        );
+        let m = Cloudflare::with_settings(Arc::new(t), &json!({"api_token": "tok"}));
         m.replace_dns(
             "example.com",
             &[DnsZoneRecord {
